@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARG-PDrNoxchen 解码工具 · 官网</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0d0f14;
+      color: #e8edf5;
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      padding: 1.5rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(18, 22, 32, 0.8);
+      backdrop-filter: blur(6px);
+      border-radius: 2rem;
+      padding: 2.5rem 2rem;
+      border: 1px solid #2a3242;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    /* 语言切换按钮 */
+    .lang-switch {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: 1px solid #3e4a5e;
+      color: #9aa9c0;
+      padding: 0.4rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .lang-btn.active {
+      background: #1e2a3a;
+      border-color: #6c8cff;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(108, 140, 255, 0.3);
+    }
+
+    .lang-btn:hover {
+      border-color: #6c8cff;
+      color: #ffffff;
+    }
+
+    /* 标题区域 */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 2.8rem;
+      padding-bottom: 1.8rem;
+      border-bottom: 1px solid #232b38;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #a8c0ff, #6c8cff, #b8a9ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero .sub {
+      font-size: 1.1rem;
+      color: #8e9db1;
+      max-width: 680px;
+      margin: 0 auto 1.8rem;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: linear-gradient(135deg, #3a5fcd, #6c8cff);
+      color: #fff;
+      font-weight: 600;
+      font-size: 1.15rem;
+      padding: 0.9rem 2.6rem;
+      border-radius: 60px;
+      text-decoration: none;
+      transition: 0.25s ease;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 10px 20px -8px rgba(60, 100, 255, 0.5);
+    }
+
+    .download-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 30px -8px rgba(60, 100, 255, 0.7);
+      background: linear-gradient(135deg, #4a6fdd, #7c9cff);
+    }
+
+    .download-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    /* 徽章 */
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.4rem;
+    }
+
+    .badge {
+      background: #1a212e;
+      border: 1px solid #2e3a4e;
+      border-radius: 40px;
+      padding: 0.35rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #b0c2da;
+      letter-spacing: 0.3px;
+    }
+
+    /* 通用卡片 */
+    .card {
+      background: #10161f;
+      border: 1px solid #232b38;
+      border-radius: 1.5rem;
+      padding: 1.8rem 1.8rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    .card h2 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #d0ddef;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .card h2 span {
+      background: #1e2a3a;
+      padding: 0.2rem 0.7rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: #8e9db1;
+      font-weight: 400;
+    }
+
+    /* 功能网格 */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .feature-item {
+      background: #161e2a;
+      border-radius: 1rem;
+      padding: 1rem 1.2rem;
+      border-left: 4px solid #6c8cff;
+      font-size: 0.95rem;
+      color: #cdd9eb;
+    }
+
+    /* 解码器表格 */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 1rem;
+      border: 1px solid #222b38;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      min-width: 600px;
+    }
+
+    th {
+      background: #1b2432;
+      color: #b8c9e0;
+      font-weight: 600;
+      padding: 0.9rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid #2b3648;
+    }
+
+    td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid #1d2532;
+      color: #c4d0e0;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #1a2332;
+    }
+
+    /* 运行方式 */
+    .run-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .run-card {
+      background: #161e2a;
+      border-radius: 1rem;
+      padding: 1.4rem 1.5rem;
+      border: 1px solid #263040;
+    }
+
+    .run-card h3 {
+      font-size: 1.15rem;
+      color: #b8c9e0;
+      margin-bottom: 0.6rem;
+    }
+
+    .run-card code {
+      background: #0b1018;
+      display: block;
+      padding: 0.8rem 1rem;
+      border-radius: 0.7rem;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: #b0d0ff;
+      border: 1px solid #222c3a;
+      margin-top: 0.5rem;
+      word-break: break-all;
+    }
+
+    /* 声明 */
+    .disclaimer {
+      background: #141b26;
+      border-left: 6px solid #f0b34b;
+      padding: 1.2rem 1.5rem;
+      border-radius: 1rem;
+      font-size: 0.95rem;
+      color: #cbd5e1;
+    }
+
+    /* 页脚 */
+    .footer {
+      margin-top: 2.5rem;
+      padding-top: 1.8rem;
+      border-top: 1px solid #232b38;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      color: #7e8ca0;
+      font-size: 0.9rem;
+    }
+
+    .footer a {
+      color: #8fa9e0;
+      text-decoration: none;
+      border-bottom: 1px dashed #3a4a62;
+      transition: 0.2s;
+    }
+
+    .footer a:hover {
+      color: #b8ccff;
+      border-bottom-color: #8fa9e0;
+    }
+
+    /* 隐藏英文 */
+    .en {
+      display: none;
+    }
+
+    .zh {
+      display: block;
+    }
+
+    /* 小屏适配 */
+    @media (max-width: 700px) {
+      body {
+        padding: 0.8rem;
+      }
+
+      .container {
+        padding: 1.5rem 1rem;
+        border-radius: 1.2rem;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .run-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- 语言切换 -->
+    <div class="lang-switch">
+      <button id="btnZh" class="lang-btn active" onclick="setLang('zh')">中文</button>
+      <button id="btnEn" class="lang-btn" onclick="setLang('en')">English</button>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+      <h1>
+        <span class="zh">ARG-PDrNoxchen 解码工具</span>
+        <span class="en">ARG-PDrNoxchen Decoder</span>
+      </h1>
+      <p class="sub zh">
+        基于 Python + Tkinter 开发的 ARG 解谜 GUI 解码工具，内置 30 种常用编码解码器。<br />
+        纯标准库 · 无需 pip 安装 · 一键批量检测。
+      </p>
+      <p class="sub en">
+        A GUI decoding tool for ARG puzzles, built with Python + Tkinter, featuring 30 common encoders/decoders.<br />
+        Pure standard library · No pip install · Batch detection in one click.
+      </p>
+
+      <!-- 下载按钮 -->
+      <a href="arg-noxchen.zip" download class="download-btn">
+        <svg viewBox="0 0 24 24" width="22" height="22">
+          <path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5v-2z" />
+        </svg>
+        <span class="zh">下载软件 (arg-noxchen.zip)</span>
+        <span class="en">Download (arg-noxchen.zip)</span>
+      </a>
+
+      <div class="badges">
+        <span class="badge">Python 3.8+</span>
+        <span class="badge">Tkinter GUI</span>
+        <span class="badge">30 Decoders</span>
+        <span class="badge">MIT License</span>
+      </div>
+    </div>
+
+    <!-- 项目介绍 / Project Introduction -->
+    <div class="card">
+      <h2>
+        <span class="zh">📖 项目介绍</span>
+        <span class="en">📖 Introduction</span>
+      </h2>
+      <p class="zh">
+        基于 Python + Tkinter 开发的 ARG 解谜 GUI 解码工具，内置 30 种 ARG 常用编码解码器，只使用 Python 标准库，不需要额外 pip 安装包。
+        支持手动选择解码器与自动批量检测两种模式，粘贴文本即可一键解码，面向 ARG 解谜与密码挑战。
+      </p>
+      <p class="en">
+        A GUI decoding tool for ARG puzzle solving, built with Python + Tkinter. It includes 30 common ARG encoders/decoders,
+        uses only the Python standard library, and requires no additional pip packages. It supports both manual decoder selection
+        and automatic batch detection. Paste text and decode with one click — designed for ARG puzzles and cipher challenges.
+      </p>
+    </div>
+
+    <!-- 功能特性 / Features -->
+    <div class="card">
+      <h2>
+        <span class="zh">⚡ 功能特性</span>
+        <span class="en">⚡ Features</span>
+      </h2>
+      <div class="features-grid">
+        <div class="feature-item zh">内置 30 种解码器</div>
+        <div class="feature-item en">Built-in 30 decoders</div>
+
+        <div class="feature-item zh">手动选择 / 自动批量检测</div>
+        <div class="feature-item en">Manual select / Auto batch detect</div>
+
+        <div class="feature-item zh">图形界面，一键解码</div>
+        <div class="feature-item en">GUI, one-click decoding</div>
+
+        <div class="feature-item zh">纯标准库，EXE 无额外依赖</div>
+        <div class="feature-item en">Pure stdlib, no extra EXE deps</div>
+
+        <div class="feature-item zh">面向 ARG 解谜、密码挑战</div>
+        <div class="feature-item en">For ARG puzzles & cipher challenges</div>
+      </div>
+    </div>
+
+    <!-- 30 个解码器清单 / 30 Decoders -->
+    <div class="card">
+      <h2>
+        <span class="zh">🧩 30 个解码器清单</span>
+        <span class="en">🧩 30 Decoders List</span>
+      </h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th class="zh">解码器</th>
+              <th class="en">Decoder</th>
+              <th class="zh">说明</th>
+              <th class="en">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Base64</td><td>Base64</td><td class="zh">Base64 解码</td><td class="en">Base64 decoding</td></tr>
+            <tr><td>2</td><td>Base32</td><td>Base32</td><td class="zh">Base32 解码</td><td class="en">Base32 decoding</td></tr>
+            <tr><td>3</td><td>Base16(Hex)</td><td>Base16(Hex)</td><td class="zh">十六进制解码</td><td class="en">Hex decoding</td></tr>
+            <tr><td>4</td><td>Base85</td><td>Base85</td><td class="zh">Base85 解码</td><td class="en">Base85 decoding</td></tr>
+            <tr><td>5</td><td>Base64URL</td><td>Base64URL</td><td class="zh">Base64URL 解码</td><td class="en">Base64URL decoding</td></tr>
+            <tr><td>6</td><td>ROT13</td><td>ROT13</td><td class="zh">ROT13 字母移位</td><td class="en">ROT13 letter rotation</td></tr>
+            <tr><td>7</td><td>ROT5</td><td>ROT5</td><td class="zh">ROT5 数字移位</td><td class="en">ROT5 digit rotation</td></tr>
+            <tr><td>8</td><td>ROT18</td><td>ROT18</td><td class="zh">ROT18 组合移位</td><td class="en">ROT18 combined rotation</td></tr>
+            <tr><td>9</td><td>ROT47</td><td>ROT47</td><td class="zh">ROT47 ASCII 移位</td><td class="en">ROT47 ASCII rotation</td></tr>
+            <tr><td>10</td><td>凯撒密码(移位3)</td><td>Caesar (Shift 3)</td><td class="zh">固定移位 3</td><td class="en">Fixed shift 3</td></tr>
+            <tr><td>11</td><td>凯撒暴力破解</td><td>Caesar Brute Force</td><td class="zh">尝试所有移位</td><td class="en">Try all shifts</td></tr>
+            <tr><td>12</td><td>Atbash字母</td><td>Atbash Letters</td><td class="zh">字母反向映射</td><td class="en">Letter reverse mapping</td></tr>
+            <tr><td>13</td><td>Atbash数字</td><td>Atbash Digits</td><td class="zh">数字反向映射</td><td class="en">Digit reverse mapping</td></tr>
+            <tr><td>14</td><td>维吉尼亚(key=key)</td><td>Vigenère (key=key)</td><td class="zh">默认密钥 key</td><td class="en">Default key <code>key</code></td></tr>
+            <tr><td>15</td><td>栅栏密码2栏</td><td>Rail Fence 2 Rails</td><td class="zh">2 栏栅栏解密</td><td class="en">2-rail rail fence</td></tr>
+            <tr><td>16</td><td>摩尔斯Morse</td><td>Morse Code</td><td class="zh">摩尔斯电码解码</td><td class="en">Morse code decoding</td></tr>
+            <tr><td>17</td><td>URL解码</td><td>URL Decode</td><td class="zh">URL 百分号解码</td><td class="en">URL percent decoding</td></tr>
+            <tr><td>18</td><td>十六进制文本</td><td>Hex Text</td><td class="zh">十六进制转文本</td><td class="en">Hex to text</td></tr>
+            <tr><td>19</td><td>二进制文本</td><td>Binary Text</td><td class="zh">二进制转文本</td><td class="en">Binary to text</td></tr>
+            <tr><td>20</td><td>反转二进制</td><td>Reverse Binary</td><td class="zh">二进制位反转</td><td class="en">Reverse binary bits</td></tr>
+            <tr><td>21</td><td>八进制文本</td><td>Octal Text</td><td class="zh">八进制转文本</td><td class="en">Octal to text</td></tr>
+            <tr><td>22</td><td>文本反转</td><td>Text Reverse</td><td class="zh">字符串反转</td><td class="en">Reverse string</td></tr>
+            <tr><td>23</td><td>手机九宫格</td><td>Phone Keypad (T9)</td><td class="zh">九宫格电话键盘解码</td><td class="en">Phone keypad decoding</td></tr>
+            <tr><td>24</td><td>培根密码Bacon</td><td>Bacon Cipher</td><td class="zh">培根密码解码</td><td class="en">Bacon cipher decoding</td></tr>
+            <tr><td>25</td><td>ASCII数字转字符</td><td>ASCII to Char</td><td class="zh">ASCII 码转字符</td><td class="en">ASCII code to characters</td></tr>
+            <tr><td>26</td><td>字符转ASCII数字</td><td>Char to ASCII</td><td class="zh">字符转 ASCII 码</td><td class="en">Characters to ASCII codes</td></tr>
+            <tr><td>27</td><td>空白密码(空格/Tab)</td><td>Whitespace Cipher</td><td class="zh">空格与 Tab 编码</td><td class="en">Space and Tab encoding</td></tr>
+            <tr><td>28</td><td>\x转义十六进制</td><td>\x Escaped Hex</td><td class="zh">\x 转义十六进制解码</td><td class="en">\x escaped hex decoding</td></tr>
+            <tr><td>29</td><td>博多码Baudot</td><td>Baudot Code</td><td class="zh">博多码解码</td><td class="en">Baudot code decoding</td></tr>
+            <tr><td>30</td><td>移除所有空格</td><td>Remove All Spaces</td><td class="zh">删除全部空格</td><td class="en">Remove all spaces</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 运行方式 / How to Run -->
+    <div class="card">
+      <h2>
+        <span class="zh">🚀 运行方式</span>
+        <span class="en">🚀 How to Run</span>
+      </h2>
+      <div class="run-grid">
+        <div class="run-card">
+          <h3 class="zh">方式1：源码运行</h3>
+          <h3 class="en">Option 1: Run from Source</h3>
+          <p class="zh">需要 Python 3.8+，仅依赖自带 tkinter。</p>
+          <p class="en">Requires Python 3.8+, only uses the built-in tkinter.</p>
+          <code>python main.py</code>
+        </div>
+        <div class="run-card">
+          <h3 class="zh">方式2：EXE 版本</h3>
+          <h3 class="en">Option 2: EXE Version</h3>
+          <p class="zh">没有 Python 环境的用户，下载 Windows EXE，直接打开，不用配置环境。</p>
+          <p class="en">No Python environment? Download the Windows EXE and open it directly. No setup needed.</p>
+          <code>arg-noxchen.zip</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- 免责声明 / Disclaimer -->
+    <div class="card">
+      <h2>
+        <span class="zh">⚠️ 免责声明</span>
+        <span class="en">⚠️ Disclaimer</span>
+      </h2>
+      <div class="disclaimer">
+        <p class="zh">本工具仅用于学习、ARG 解谜娱乐，禁止非法使用。</p>
+        <p class="en">This tool is intended only for learning and ARG puzzle entertainment. Illegal use is prohibited.</p>
+      </div>
+    </div>
+
+    <!-- 页脚 / Footer -->
+    <div class="footer">
+      <div>
+        <span class="zh">作者：Noxchen</span>
+        <span class="en">Author: Noxchen</span>
+        &nbsp;·&nbsp;
+        <a href="https://me.noxchen.dpdns.org" target="_blank" rel="noopener">me.noxchen.dpdns.org</a>
+      </div>
+      <div>
+        <span class="zh">MIT License · 保留原作者信息</span>
+        <span class="en">MIT License · Retain original author info</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function setLang(lang) {
+      // 按钮状态
+      document.getElementById('btnZh').classList.toggle('active', lang === 'zh');
+      document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+
+      // 所有 .zh 和 .en 元素
+      const zhEls = document.querySelectorAll('.zh');
+      const enEls = document.querySelectorAll('.en');
+
+      if (lang === 'zh') {
+        zhEls.forEach(el => el.style.display = 'block');
+        enEls.forEach(el => el.style.display = 'none');
+
+        // 表格内 th/td 是 inline 元素，用 inline 保持布局
+        document.querySelectorAll('th.zh, td.zh').forEach(el => el.style.display = 'table-cell');
+        document.querySelectorAll('th.en, td.en').forEach(el => el.style.display = 'none');
+
+        // 按钮内的 span 是 inline，恢复正常显示
+        document.querySelectorAll('.download-btn .zh, .download-btn .en').forEach(el => {
+          el.style.display = (lang === 'zh') ? 'inline' : 'none';
+        });
+        document.querySelectorAll('.hero .zh, .hero .en').forEach(el => {
+          el.style.display = (lang === 'zh') ? 'block' : 'none';
+        });
+        // 卡片标题里的 span 是 inline
+        document.querySelectorAll('.card h2 .zh, .card h2 .en').forEach(el => {
+          el.style.display = (lang === 'zh') ? 'inline' : 'none';
+        });
+        // 运行卡片标题
+        document.querySelectorAll('.run-card h3.zh, .run-card h3.en').forEach(el => {
+          el.style.display = (lang === 'zh') ? 'block' : 'none';
+        });
+        // 免责声明段落
+        document.querySelectorAll('.disclaimer .zh, .disclaimer .en').forEach(el => {
+          el.style.display = (lang === 'zh') ? 'block' : 'none';
+        });
+        // feature-item 是块级
+        document.querySelectorAll('.feature-item.zh').forEach(el => el.style.display = 'block');
+        document.querySelectorAll('.feature-item.en').forEach(el => el.style.display = 'none');
+        // 页脚内联
+        document.querySelectorAll('.footer .zh, .footer .en').forEach(el => {
+          el.style.display = (lang === 'zh') ? 'inline' : 'none';
+        });
+
+      } else {
+        zhEls.forEach(el => el.style.display = 'none');
+        enEls.forEach(el => el.style.display = 'block');
+
+        document.querySelectorAll('th.zh, td.zh').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('th.en, td.en').forEach(el => el.style.display = 'table-cell');
+
+        document.querySelectorAll('.download-btn .zh, .download-btn .en').forEach(el => {
+          el.style.display = (lang === 'en') ? 'inline' : 'none';
+        });
+        document.querySelectorAll('.hero .zh, .hero .en').forEach(el => {
+          el.style.display = (lang === 'en') ? 'block' : 'none';
+        });
+        document.querySelectorAll('.card h2 .zh, .card h2 .en').forEach(el => {
+          el.style.display = (lang === 'en') ? 'inline' : 'none';
+        });
+        document.querySelectorAll('.run-card h3.zh, .run-card h3.en').forEach(el => {
+          el.style.display = (lang === 'en') ? 'block' : 'none';
+        });
+        document.querySelectorAll('.disclaimer .zh, .disclaimer .en').forEach(el => {
+          el.style.display = (lang === 'en') ? 'block' : 'none';
+        });
+        document.querySelectorAll('.feature-item.zh').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.feature-item.en').forEach(el => el.style.display = 'block');
+        document.querySelectorAll('.footer .zh, .footer .en').forEach(el => {
+          el.style.display = (lang === 'en') ? 'inline' : 'none';
+        });
+      }
+    }
+
+    // 页面加载时默认中文
+    window.addEventListener('DOMContentLoaded', () => {
+      setLang('zh');
+    });
+  </script>
+
+</body>
+</html>
